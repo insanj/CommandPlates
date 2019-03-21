@@ -14,7 +14,7 @@ GIT_TAG:=$(shell git describe --tags)
 OUTPUT_VERSIONED_NAME=$(OUTPUT_NAME)-$(GIT_TAG)
 SERVER_PATH=server
 
-FIND_JAVA_FILES := $(shell find . -name '*.java')
+FIND_JAVA_FILES := $(shell find $(SOURCE_PATH) -name '*.java')
 
 .PHONY: all
 all: plugin server
@@ -26,14 +26,17 @@ plugin:
 	mkdir $(BUILD_PATH) && mkdir $(BUILD_PATH)/bin
 	# step 2 part 2 compile the plugin into the bin dir
 	$(JAVAC_CMD) -cp "$(JAR_DEPS_PATH)" -d $(BUILD_PATH)/bin $(FIND_JAVA_FILES)
-	# step 3 copy config .yml to a new "build in progress" directory
-	-cp -r $(SOURCE_PATH)/*.yml $(BUILD_PATH)/bin/
-	# step 4 create JAR file using the "build in progress" folder
+	# step 3 copy source files because open source is console
+	#find $(SOURCE_PATH) -name '*.java' -exec cp -at $(BUILD_PATH)/bin {} +
+	cp -r ./$(SOURCE_PATH)/me ./$(BUILD_PATH)/bin
+	# step 4 copy config .yml to a new "build in progress" directory
+	cp -r $(SOURCE_PATH)/*.yml $(BUILD_PATH)/bin/
+	# step 5 create JAR file using the "build in progress" folder
 	$(JAR_CMD) -cvf $(BUILD_PATH)/$(OUTPUT_VERSIONED_NAME).jar -C $(BUILD_PATH)/bin .
 
 .PHONY: clean
 clean:
-	# step 5 remove any existing plugin on the server in the server folder
+	# step 6 remove any existing plugin on the server in the server folder
 	-rm -r -f $(SERVER_PATH)
 	mkdir $(SERVER_PATH)
 	echo "eula=true" > $(SERVER_PATH)/eula.txt
@@ -42,11 +45,6 @@ clean:
 
 .PHONY: server
 server:
-	# step 6 copy the JAR file into the server to run it!
+	# step 7 copy the JAR file into the server to run it!
 	-cp -R $(BUILD_PATH)/$(OUTPUT_VERSIONED_NAME).jar $(SERVER_PATH)/plugins/$(OUTPUT_VERSIONED_NAME).jar
 	cd $(SERVER_PATH) && java -Xms1G -Xmx1G -jar -DIReallyKnowWhatIAmDoingISwear $(CRAFTBUKKIT_JAR_FILENAME)
-
-.PHONY: nbted
-nbted:
-	 nbted --print schematics/default.schematic > build/default.schematic.txt
-	 # install with cargo; converts any NBT file to a pretty-printed txt (can be converted back if needed)
