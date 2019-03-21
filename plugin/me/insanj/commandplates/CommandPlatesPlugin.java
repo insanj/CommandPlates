@@ -29,15 +29,19 @@ import org.bukkit.FluidCollisionMode;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 public class CommandPlatesPlugin extends JavaPlugin {
+    private CommandPlatesConfig config;
+    private CommandExecutor executor;
 
     @Override
     public void onEnable() {
+      // (1) setup config, which reads all existing pressure plates from config.yml (or saves default config.yml if not)
+      config = new CommandPlatesConfig(this);
 
-      getLogger().info("I'm alive!");
+      // (2) setup listeners for pressure plate steps, which will then execute commands based on config
+      Bukkit.getPluginManager().registerEvents(listener, this);
 
-    //  Bukkit.getPluginManager().registerEvents(listener, this);
-
-      CommandPlatesCommandExecutor executor = new CommandPlatesCommandExecutor();
+      // (3) setup commands to allow for list, create, and info (each needs permissions)
+      executor = new CommandPlatesCommandExecutor(this);
       getCommand("pplates").setExecutor(executor);
     }
 
