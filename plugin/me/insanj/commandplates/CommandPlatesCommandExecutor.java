@@ -39,20 +39,19 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       return false;
     }
 
-    if (!(sender instanceof Player) || !sender.isOp()) {
-        sender.sendMessage(ChatColor.RED + "");
-        return false;
-    }
-
-    Player player = (Player) sender;
     String argumentString = args[0];
-
-    if (argumentString.equals(config.COMMAND.CREATE())) {
-      return onCommandCreate(player, args);
-    } else if (argumentString.equals(config.COMMAND.LIST())) {
-      return onCommandList(player, args);
+    if (argumentString.equals(config.COMMAND.LIST())) {
+      return onCommandList(sender, args);
     } else if (argumentString.equals(config.COMMAND.INFO())) {
-      return onCommandInfo(player, args);
+      return onCommandInfo(sender, args);
+    } else if (argumentString.equals(config.COMMAND.CREATE())) {
+      if (!(sender instanceof Player)) {
+        sender.sendMessage(ChatColor.RED + "You must be a player to execute this command.");
+        return false;
+      }
+
+      Player player = (Player) sender;
+      return onCommandCreate(player, args);
     }
 
     return false;
@@ -82,6 +81,8 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       i++;
     }
 
+    concatCommand = concatCommand.replaceAll("%player%", player.getName());
+
     String[] commandSplit = concatCommand.split(",");
     ArrayList<String> commandList = new ArrayList<>();
     for (String cmd: commandSplit) {
@@ -105,7 +106,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     return true;
   }
 
-  public boolean onCommandList(Player player, String[] args) {
+  public boolean onCommandList(CommandSender sender, String[] args) {
      Map<String, Map> plates = config.getPlates();
      for (String plateName : plates.keySet()) {
        Map<String, Map> plate = plates.get(plateName);
@@ -130,13 +131,13 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
        }
 
        String plateMessage = String.format("%s plate: %s", plateName, message);
-       player.sendMessage(plateMessage);
+       sender.sendMessage(plateMessage);
      }
 
      return true;
   }
 
-  public boolean onCommandInfo(Player player, String[] args) {
+  public boolean onCommandInfo(CommandSender sender, String[] args) {
     String plateName = args[1];
     Map<String, Map> plate = (Map<String, Map>)config.getPlate(plateName);
     String message = "";
@@ -159,7 +160,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       }
     }
 
-    player.sendMessage(String.format("%s%s", plateName, message));
+    sender.sendMessage(String.format("%s%s", plateName, message));
     return true;
   }
 }
