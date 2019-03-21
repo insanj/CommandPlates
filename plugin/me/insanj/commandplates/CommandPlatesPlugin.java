@@ -31,6 +31,7 @@ import org.apache.commons.lang.exception.ExceptionUtils;
 public class CommandPlatesPlugin extends JavaPlugin {
     private CommandPlatesConfig config;
     private CommandExecutor executor;
+    private CommandPlatesListener listener;
 
     @Override
     public void onEnable() {
@@ -38,6 +39,7 @@ public class CommandPlatesPlugin extends JavaPlugin {
       config = new CommandPlatesConfig(this);
 
       // (2) setup listeners for pressure plate steps, which will then execute commands based on config
+      listener = new CommandPlatesListener(this, config);
       Bukkit.getPluginManager().registerEvents(listener, this);
 
       // (3) setup commands to allow for list, create, and info (each needs permissions)

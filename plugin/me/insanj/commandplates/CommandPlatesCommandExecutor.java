@@ -95,10 +95,61 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandList(Player player, String[] args) {
+     Map<String, Map> plates = config.getPlates();
+     for (String plateName : plates.keySet()) {
+       Map<String, Map> plate = plates.get(plateName);
+       String message = "";
+       for (String plateAttributeName : plate.keySet()) {
+         if (plateAttributeName.equals(CommandPlatesConfig.KEY.LOCATION)) {
+           Map<String, Object> locationMap = plates
+           String locationString = String.format("%s, %s, %s, %s" plates.get(CommandPlatesConfig.KEY.LOCATION_X), plates.get(CommandPlatesConfig.KEY.LOCATION_Y), plates.get(CommandPlatesConfig.KEY.LOCATION.Z), plates.get(CommandPlatesConfig.KEY.LOCATION_WORLD));
+           message += String.format("%s: %s", plateAttributeName, locationString);
+         } else if (plateAttributeName.equlas(CommandPlatesConfig.KEY.COMMANDS)) {
+           String commandsString = "";
+           List<String> commandsList = (List<String>)plate.get(plateAttributeName);
+           String commandsString = "commands: ";
+           Integer i = Integer.parseInt(1);
+           for (String cmdString : commandsList) {
+             commandsString += String.format("%s %s", i.toString(), cmdString);
+             i++;
+           }
+           message += String.format("%s: %s", plateAttributeName, commandsString);
+         } else {
+           message += String.format("%s: %s", plateAttributeName, plates.get(plateAttributeName));
+         }
+       }
 
+       String plateMessage = String.format("%s plate: %s", plateAttributeName, message);
+       player.sendMessage(plateMessage);
+     }
+
+     return true;
   }
 
   public boolean onCommandInfo(Player player, String[] args) {
+    String plateName = args[1];
+    Map<String, Map> plate = (Map<String, Map>)config.getPlate(plateName);
+    String message = "";
+    for (String plateAttributeName : plate.keySet()) {
+      if (plateAttributeName.equals(CommandPlatesConfig.KEY.LOCATION)) {
+        Map<String, Object> locationMap = plates
+        String locationString = String.format("%s, %s, %s, %s" plates.get(CommandPlatesConfig.KEY.LOCATION_X), plates.get(CommandPlatesConfig.KEY.LOCATION_Y), plates.get(CommandPlatesConfig.KEY.LOCATION.Z), plates.get(CommandPlatesConfig.KEY.LOCATION_WORLD));
+        message += String.format("\n%s: %s", plateAttributeName, locationString);
+      } else if (plateAttributeName.equlas(CommandPlatesConfig.KEY.COMMANDS)) {
+        String commandsString = "";
+        List<String> commandsList = (List<String>)plate.get(plateAttributeName);
+        String commandsString = "commands: ";
+        Integer i = Integer.parseInt(1);
+        for (String cmdString : commandsList) {
+          commandsString += String.format("%s %s", i.toString(), cmdString);
+          i++;
+        }
+        message += String.format("\n%s: %s", plateAttributeName, commandsString);
+      } else {
+        message += String.format("\n%s: %s", plateAttributeName, plates.get(plateAttributeName));
+      }
+    }
 
+    player.sendMessage(String.format("%s%s", plateName, message);
   }
 }

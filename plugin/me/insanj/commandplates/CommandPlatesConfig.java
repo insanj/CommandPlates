@@ -143,7 +143,7 @@ public class CommandPlatesConfig {
     }
 
     // public getters
-    public Map<String, Map>getPlates() {
+    public Map<String, Map> getPlates() {
       return plates;
     }
 

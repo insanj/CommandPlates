@@ -4,6 +4,8 @@
 
 ## Request
 
+https://bukkit.org/threads/pressureplates.478872/
+
 Minecraft version: 1.12.2
 
 Suggested name: PressurePlates
