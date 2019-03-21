@@ -115,7 +115,7 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     public Map getActivatedPlate(Location location) {
       // TODO
       Map<String, Map> plates = (Map<String, Map>) getPlates();
-      int threshold = 1; // blocks away from pressure plate
+      int threshold = 3; // blocks away from pressure plate
       for (String plateName : plates.keySet()) {
         Map<String, Object> plate = (Map<String, Object>) plates.get(plateName);
         Location plateLocation = getLocationForPlate(plateName);

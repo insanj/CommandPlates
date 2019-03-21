@@ -81,8 +81,6 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       i++;
     }
 
-    plugin.getLogger().info("concatCommand = " + concatCommand);
-
     String[] commandSplit = concatCommand.split(",");
     ArrayList<String> commandList = new ArrayList<>();
     for (String cmd: commandSplit) {

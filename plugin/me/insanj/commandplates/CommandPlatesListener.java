@@ -33,15 +33,17 @@ public class CommandPlatesListener implements Listener {
       Block block =  e.getClickedBlock();
       if (block == null) { return; }
 
-      if (block.getType() == Material.STONE_PLATE && block.getRelative(BlockFace.DOWN).getType() == Material.STONE) {
+     // List<BlockType> pressurePlateTypes = Arrays.asList(Material.ACACIA_PRESSURE_PLATE, Material.BIRCH_PRESSURE_PLATE, Material.DARK_OAK_PRESSURE_PLATE, Material.HEAVY_WEIGHTED_PRESSURE_PLATE, Material.JUNGLE_PRESSURE_PLATE, Material.LIGHT_WEIGHTED_PRESSURE_PLATE, Material.OAK_PRESSURE_PLATE, Material.SPRUCE_PRESSURE_PLATESTONE_PRESSURE_PLATE);
+
+      if (block.getType() == Material.STONE_PLATE || block.getType() == Material.WOOD_PLATE || block.getType() == Material.GOLD_PLATE || block.getType() == Material.IRON_PLATE) {
         Location location = block.getLocation();
         Player player = e.getPlayer();
 
         plugin.getLogger().info(String.format("Detected pressure plate @ %s, checking if it's command activated...", location.toString()));
         CommandPlatesListener listener = this;
-        Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-            @Override
-            public void run() {
+//Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+        //    @Override
+        //    public void run() {
               Map<String, Object> activatedPlate = config.getActivatedPlate(location);
               if (activatedPlate != null) {
                 if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
@@ -49,8 +51,8 @@ public class CommandPlatesListener implements Listener {
                     listener.runCommandFromPlate(activatedPlate);
                 }
               }
-            }
-        });
+      //      }
+      //  });
       }
     }
 

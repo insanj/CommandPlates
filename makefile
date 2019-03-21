@@ -40,8 +40,7 @@ server:
 	-cp -R $(BUILD_PATH)/$(OUTPUT_VERSIONED_NAME).jar $(SERVER_PATH)/plugins/$(OUTPUT_VERSIONED_NAME).jar
 	cd $(SERVER_PATH) && java -Xms1G -Xmx1G -jar -DIReallyKnowWhatIAmDoingISwear $(CRAFTBUKKIT_JAR_FILENAME)
 
-
-	.PHONY: clean
+.PHONY: clean
 	clean:
 		# step 6/8 remove any existing plugin on the server in the server folder
 		-rm -r -f $(SERVER_PATH)
