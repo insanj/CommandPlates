@@ -37,9 +37,10 @@ public class CommandPlatesListener implements Listener {
 
       if (block.getType() == Material.STONE_PLATE || block.getType() == Material.WOOD_PLATE || block.getType() == Material.GOLD_PLATE || block.getType() == Material.IRON_PLATE) {
         Location location = block.getLocation();
+        Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
         Player player = e.getPlayer();
 
-        plugin.getLogger().info(String.format("Detected pressure plate @ %s, checking if it's command activated...", location.toString()));
+        plugin.getLogger().info(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
         CommandPlatesListener listener = this;
 //Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
         //    @Override
@@ -48,7 +49,7 @@ public class CommandPlatesListener implements Listener {
               if (activatedPlate != null) {
                 if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
                     listener.plugin.getLogger().info(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
-                    listener.runCommandFromPlate(activatedPlate);
+                    listener.runCommandFromPlate(player, activatedPlate);
                 }
               }
       //      }
@@ -56,14 +57,18 @@ public class CommandPlatesListener implements Listener {
       }
     }
 
-    private void runCommandFromPlate(Map<String, Object> plate) {
+    private void runCommandFromPlate(Player player, Map<String, Object> plate) {
       List<String> commandList = config.getActivatedPlateCommandList(plate);
       for (String commandString : commandList) {
         // Schedules a once off task to occur as soon as possible.
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
           @Override
           public void run() {
-            Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), commandString);
+            if (config.getConsoleBoolFromPlate(plate) == true) {
+              Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), commandString);
+            } else {
+              Bukkit.getServer().dispatchCommand(player, commandString);
+            }
           }
         });
       }

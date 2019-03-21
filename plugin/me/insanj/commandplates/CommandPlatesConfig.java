@@ -22,6 +22,7 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     private final CommandPlatesPlugin plugin;
     private Map<String, Map> plates;
+    private Map<Location, Map> platesByLocation;
 
     public CommandPlatesConfig(CommandPlatesPlugin plugin) {
         this.plugin = plugin;
@@ -32,12 +33,15 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     private void setup() {
       plugin.saveDefaultConfig();
       reload();
+
       this.plates = readPlates();
+      this.platesByLocation = createPlatesByLocation(this.plates);
     }
 
     public void reload() {
       plugin.reloadConfig();
       this.plates = readPlates();
+      this.platesByLocation = createPlatesByLocation(this.plates);
     }
 
     private void save() {
@@ -103,6 +107,16 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
       return parsedPlates;
     }
 
+    private Map<Location, Map> createPlatesByLocation(Map<String, Map> platesToUse) {
+        HashMap<Location, Map> genPlatesByLocation = new HashMap();
+        for (String plateName : platesToUse.keySet()) {
+          Map<String, Object> plate = platesToUse.get(plateName);
+          Location plateLocation = getLocationForPlate(plateName);
+          genPlatesByLocation.put(plateLocation, plate);
+        }
+        return genPlatesByLocation;
+    }
+
     // public getters
     public Map<String, Map> getPlates() {
       return plates;
@@ -113,18 +127,20 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     }
 
     public Map getActivatedPlate(Location location) {
-      // TODO
-      Map<String, Map> plates = (Map<String, Map>) getPlates();
-      int threshold = 3; // blocks away from pressure plate
+     /* int threshold = 3; // blocks away from pressure plate
       for (String plateName : plates.keySet()) {
         Map<String, Object> plate = (Map<String, Object>) plates.get(plateName);
         Location plateLocation = getLocationForPlate(plateName);
         if (location.distance(plateLocation) <= threshold) {
           return plate;
         }
-      }
+      }*/
 
-      return null;
+      return platesByLocation.get(location);
+    }
+
+    public boolean getConsoleBoolFromPlate(Map plate) {
+      return (boolean)plate.get(KEY.CONSOLE());
     }
 
     public List<String> getActivatedPlateCommandList(Map plate) {
@@ -143,11 +159,13 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
         plate.put(KEY.CONSOLE(), console);
         plate.put(KEY.COMMANDS(), commandList);
 
+        Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
+
         HashMap plateLocation = new HashMap();
-        plateLocation.put(KEY.LOCATION_WORLD(), location.getWorld().getName());
-        plateLocation.put(KEY.LOCATION_X(), location.getX());
-        plateLocation.put(KEY.LOCATION_Y(), location.getY());
-        plateLocation.put(KEY.LOCATION_Z(), location.getZ());
+        plateLocation.put(KEY.LOCATION_WORLD(), integerLocation.getWorld().getName());
+        plateLocation.put(KEY.LOCATION_X(), integerLocation.getX());
+        plateLocation.put(KEY.LOCATION_Y(), integerLocation.getY());
+        plateLocation.put(KEY.LOCATION_Z(), integerLocation.getZ());
 
         plate.put(KEY.LOCATION(), plateLocation);
 
@@ -155,7 +173,9 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
         plugin.getConfig().createSection(platesConfigSectionPath, plate);
         plugin.saveConfig();
 
-        plate.put(KEY.LOCATION(), location); // reset location to normal
+        plate.put(KEY.LOCATION(), integerLocation); // reset location to normal
+
+        platesByLocation.put(integerLocation, plate);
         plates.put(plateName, plate);
     }
 
