@@ -64,8 +64,9 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
             Object plateAttributeValue = unparsedPlate.get(plateAttributeName);
 
             if (plateAttributeName.equals(KEY.LOCATION())) {
-              Map<String, Object> locationAttribute = (Map<String, Object>) plateAttributeValue;
-              String worldName = (String)locationAttribute.get(KEY.LOCATION_WORLD()); // might need to getConfigSection() again here
+              ConfigurationSection locationSection = (ConfigurationSection) plateAttributeValue;
+              Map<String, Object> locationAttribute = (Map<String, Object>)  plugin.getConfig().getConfigurationSection(locationSection.getCurrentPath()).getValues(false);
+              String worldName = (String)locationAttribute.get(KEY.LOCATION_WORLD());
               Object xObj = locationAttribute.get(KEY.LOCATION_X());
               Object yObj = locationAttribute.get(KEY.LOCATION_Y());
               Object zObj = locationAttribute.get(KEY.LOCATION_Z());
@@ -146,6 +147,10 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
 
       String author = (String)plate.get(KEY.AUTHOR());
       if (author.equals(player.getName())) {
+        return true;
+      }
+
+      else if (player.hasPermission(PERMISSION.PLAYER(author))) {
         return true;
       }
 
