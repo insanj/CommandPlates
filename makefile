@@ -4,7 +4,7 @@ JAVAC_CMD=/usr/lib/jvm/jdk1.8.0_131/bin/javac
 JAR_CMD=/usr/lib/jvm/jdk1.8.0_131/bin/jar
 
 OUTPUT_NAME=CommandPlates
-SOURCE_PATH=plugin/java
+SOURCE_PATH=plugin
 BUILD_PATH=build
 EXTERNAL_PATH=external
 SPIGOT_JAR_FILENAME=spigot-1.12.2.jar

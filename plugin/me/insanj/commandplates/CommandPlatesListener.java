@@ -1,15 +1,21 @@
 package me.insanj.commandplates;
 
+import java.util.Map;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.World;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.entity.Player;
+import org.bukkit.block.BlockFace;
+import org.bukkit.block.Block;
 
 public class CommandPlatesListener implements Listener {
     private final CommandPlatesPlugin plugin;
@@ -17,7 +23,7 @@ public class CommandPlatesListener implements Listener {
 
     public CommandPlatesListener(CommandPlatesPlugin plugin, CommandPlatesConfig config) {
         this.plugin = plugin;
-        this.config = configconfig;
+        this.config = config;
     }
 
     @EventHandler
@@ -32,7 +38,7 @@ public class CommandPlatesListener implements Listener {
             public void run() {
               Map<String, Object> activatedPlate = config.getActivatedPlate(location);
               if (activatedPlate != null) {
-                if (listener.config.hasPermission(player, activatedPlate) == true) {
+                if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
                     listener.runCommandFromPlate(activatedPlate);
                 }
               }

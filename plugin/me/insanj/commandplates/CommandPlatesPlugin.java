@@ -25,7 +25,6 @@ import org.bukkit.Material;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.ShapedRecipe;
-import org.bukkit.FluidCollisionMode;
 import org.apache.commons.lang.exception.ExceptionUtils;
 
 public class CommandPlatesPlugin extends JavaPlugin {
@@ -43,7 +42,7 @@ public class CommandPlatesPlugin extends JavaPlugin {
       Bukkit.getPluginManager().registerEvents(listener, this);
 
       // (3) setup commands to allow for list, create, and info (each needs permissions)
-      executor = new CommandPlatesCommandExecutor(this);
+      executor = new CommandPlatesCommandExecutor(this, config);
       getCommand("pplates").setExecutor(executor);
     }
 

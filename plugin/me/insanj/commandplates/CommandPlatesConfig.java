@@ -2,7 +2,8 @@ package me.insanj.commandplates;
 
 import java.util.Map;
 import java.util.HashMap;
-import java.util.UUID;
+import java.util.List;
+import java.util.ArrayList;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -13,55 +14,12 @@ import java.io.Serializable;
 
 import org.bukkit.World;
 import org.bukkit.Location;
+import org.bukkit.entity.Player;
 
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 
-
-/*
-
-
-plates:
-  Example:
-    author: insanj
-    location:
-       - world: world
-       - x: 0
-       - y: 0
-       - z: 0
-    console: true
-    commands:
-      - say Hello
-      - say World!
-
-
-*/
-
-public class CommandPlatesConfig {
-    public class KEY {
-      public static final String PLATES = "plates";
-      public static final String AUTHOR = "author";
-      public static final String LOCATION = "location";
-      public static final String LOCATION_WORLD = "world";
-      public static final String LOCATION_X = "x";
-      public static final String LOCATION_Y = "y";
-      public static final String LOCATION_Z = "z";
-      public static final String CONSOLE = "console";
-      public static final String COMMANDS = "commands";
-    }
-
-    class COMMAND {
-      public static final String CREATE = "create";
-      public static final String LIST = "list";
-      public static final String INFO = "info";
-    }
-
-    class PERMISSION {
-      public static final String PREFIX = "pplates";
-      public static final String CREATE = PREFIX + ".admin";
-      public static final String USE = PREFIX + ".use";
-    }
-
+public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     private final CommandPlatesPlugin plugin;
     private Map<String, Map> plates;
 
@@ -88,7 +46,7 @@ public class CommandPlatesConfig {
 
     // loading of values from config file
     private Map<String, Map> readPlates() {
-      final String platesSectionKey = KEY.PLATES;
+      final String platesSectionKey = KEY.PLATES();
       ConfigurationSection platesConfigSection = plugin.getConfig().getConfigurationSection(platesSectionKey);
       if (platesConfigSection == null) {
         return new HashMap();
@@ -102,13 +60,15 @@ public class CommandPlatesConfig {
 
           Map<String, Object> unparsedPlate = (Map<String, Object>) plugin.getConfig().getConfigurationSection(plateSectionPath).getValues(false);
           HashMap parsedPlate = new HashMap();
-          for (String plateAttributeName : parsedPlate.keySet()) {
-            Object plateAttributeValue = parsedPlate.get(plateAttributeName);
-            if (plateAttributeName.equals(KEYS.LOCATION)) {
-              String worldName = (String)plateAttributeValue.get(KEYS.LOCATION_WORLD); // might need to getConfigSection() again here
-              Object xObj = plateAttributeValue.get(KEYS.LOCATION_X);
-              Object yObj = plateAttributeValue.get(KEYS.LOCATION_Y);
-              Object zObj = plateAttributeValue.get(KEYS.LOCATION_Z);
+          for (String plateAttributeName : unparsedPlate.keySet()) {
+            Object plateAttributeValue = unparsedPlate.get(plateAttributeName);
+
+            if (plateAttributeName.equals(KEY.LOCATION())) {
+              Map<String, Object> locationAttribute = (Map<String, Object>) plateAttributeValue;
+              String worldName = (String)locationAttribute.get(KEY.LOCATION_WORLD()); // might need to getConfigSection() again here
+              Object xObj = locationAttribute.get(KEY.LOCATION_X());
+              Object yObj = locationAttribute.get(KEY.LOCATION_Y());
+              Object zObj = locationAttribute.get(KEY.LOCATION_Z());
               Double x, y, z;
               if (xObj instanceof Integer) {
                   x = new Double((Integer)xObj);
@@ -136,10 +96,10 @@ public class CommandPlatesConfig {
             }
           }
 
-          parsedPlate.put(plateName, parsedPlate);
+          parsedPlates.put(plateName, parsedPlate);
       }
 
-      return parsedPlate;
+      return parsedPlates;
     }
 
     // public getters
@@ -152,39 +112,39 @@ public class CommandPlatesConfig {
     }
 
     public Map getActivatedPlate(Location location) {
-
+      return new HashMap();
     }
 
     public List<String> getActivatedPlateCommandList(Map plate) {
-
+      return new ArrayList<String>();
     }
 
     public void setPlate(String plateName, String author, Location location, boolean console, List<String> commandList) {
         HashMap plate = new HashMap();
-        plate.put(KEYS.AUTHOR, author);
-        plate.put(KEYS.CONSOLE, console);
-        plate.put(KEYS.COMMANDS, commandList);
+        plate.put(KEY.AUTHOR(), author);
+        plate.put(KEY.CONSOLE(), console);
+        plate.put(KEY.COMMANDS(), commandList);
 
         HashMap plateLocation = new HashMap();
-        plateLocation.put(KEYS.LOCATION_WORLD, location.getWorld().getName());
-        plateLocation.put(KEYS.LOCATION_X, location.getX());
-        plateLocation.put(KEYS.LOCATION_Y, location.getY());
-        plateLocation.put(KEYS.LOCATION_Z, location.getZ());
+        plateLocation.put(KEY.LOCATION_WORLD(), location.getWorld().getName());
+        plateLocation.put(KEY.LOCATION_X(), location.getX());
+        plateLocation.put(KEY.LOCATION_Y(), location.getY());
+        plateLocation.put(KEY.LOCATION_Z(), location.getZ());
 
-        plate.put(KEYS.LOCATION, plateLocation);
+        plate.put(KEY.LOCATION(), plateLocation);
 
-        String platesConfigSectionPath = KEYS.PLATES + "." + plateName;
+        String platesConfigSectionPath = KEY.PLATES() + "." + plateName;
         plugin.getConfig().createSection(platesConfigSectionPath, plate);
         plugin.saveConfig();
         plates.put(plateName, plate);
     }
 
-    private boolean hasPermissionToRunPlate(Player player, Map<String, Object> plate) {
-      if (player.isOp() || player.hasPermission(PERMISSION.CREATE)) {
+    public boolean hasPermissionToRunPlate(Player player, Map<String, Object> plate) {
+      if (player.isOp() || player.hasPermission(PERMISSION.CREATE())) {
         return true;
       }
 
-      String author = (String)plate.get(KEY.AUTHOR);
+      String author = (String)plate.get(KEY.AUTHOR());
       if (author.equals(player.getName())) {
         return true;
       }

@@ -1,10 +1,13 @@
 package me.insanj.commandplates;
 
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.lang.Math;
+import java.util.Date;
+import java.util.List;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 import java.io.File;
 
 import org.bukkit.Bukkit;
@@ -22,6 +25,13 @@ import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class CommandPlatesCommandExecutor implements CommandExecutor {
+  private final CommandPlatesPlugin plugin;
+  private final CommandPlatesConfig config;
+
+  public CommandPlatesCommandExecutor(CommandPlatesPlugin plugin, CommandPlatesConfig config) {
+    this.plugin = plugin;
+    this.config = config;
+  }
 
   public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
     if (args.length <= 0) {
@@ -36,11 +46,11 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     Player player = (Player) sender;
     String argumentString = args[0];
 
-    if (argumentString.equals(CommandPlatesConfig.COMMAND.CREATE)) {
+    if (argumentString.equals(config.COMMAND.CREATE())) {
       return onCommandCreate(player, args);
-    } else if (argumentString.equals(CommandPlatesConfig.COMMAND.LIST)) {
+    } else if (argumentString.equals(config.COMMAND.LIST())) {
       return onCommandList(player, args);
-    } else if (argumentString.equals(CommandPlatesConfig.COMMAND.INFO)) {
+    } else if (argumentString.equals(config.COMMAND.INFO())) {
       return onCommandInfo(player, args);
     }
 
@@ -48,7 +58,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandCreate(Player player, String[] args) {
-    String createPermissionString = CommandPlatesConfig.PERMISSION.CREATE;
+    String createPermissionString = config.PERMISSION.CREATE();
     if (player.hasPermission(createPermissionString) == false || player.isOp() == false) {
       player.sendMessage(ChatColor.RED + "You do not have permission to create new command plates.");
       return true;
@@ -100,26 +110,25 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
        Map<String, Map> plate = plates.get(plateName);
        String message = "";
        for (String plateAttributeName : plate.keySet()) {
-         if (plateAttributeName.equals(CommandPlatesConfig.KEY.LOCATION)) {
-           Map<String, Object> locationMap = plates
-           String locationString = String.format("%s, %s, %s, %s" plates.get(CommandPlatesConfig.KEY.LOCATION_X), plates.get(CommandPlatesConfig.KEY.LOCATION_Y), plates.get(CommandPlatesConfig.KEY.LOCATION.Z), plates.get(CommandPlatesConfig.KEY.LOCATION_WORLD));
+         if (plateAttributeName.equals(config.KEY.LOCATION())) {
+           Map<String, Object> locationMap = (Map<String, Object>) plate.get(plateAttributeName);
+           String locationString = String.format("%s, %s, %s, %s", plates.get(config.KEY.LOCATION_X()), plates.get(config.KEY.LOCATION_Y()), plates.get(config.KEY.LOCATION_Z()), plates.get(config.KEY.LOCATION_WORLD()));
            message += String.format("%s: %s", plateAttributeName, locationString);
-         } else if (plateAttributeName.equlas(CommandPlatesConfig.KEY.COMMANDS)) {
-           String commandsString = "";
+         } else if (plateAttributeName.equals(config.KEY.COMMANDS())) {
            List<String> commandsList = (List<String>)plate.get(plateAttributeName);
            String commandsString = "commands: ";
-           Integer i = Integer.parseInt(1);
+           Integer i = new Integer(1);
            for (String cmdString : commandsList) {
              commandsString += String.format("%s %s", i.toString(), cmdString);
              i++;
            }
            message += String.format("%s: %s", plateAttributeName, commandsString);
          } else {
-           message += String.format("%s: %s", plateAttributeName, plates.get(plateAttributeName));
+           message += String.format("%s: %s", plateAttributeName, plate.get(plateAttributeName));
          }
        }
 
-       String plateMessage = String.format("%s plate: %s", plateAttributeName, message);
+       String plateMessage = String.format("%s plate: %s", plateName, message);
        player.sendMessage(plateMessage);
      }
 
@@ -131,25 +140,25 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     Map<String, Map> plate = (Map<String, Map>)config.getPlate(plateName);
     String message = "";
     for (String plateAttributeName : plate.keySet()) {
-      if (plateAttributeName.equals(CommandPlatesConfig.KEY.LOCATION)) {
-        Map<String, Object> locationMap = plates
-        String locationString = String.format("%s, %s, %s, %s" plates.get(CommandPlatesConfig.KEY.LOCATION_X), plates.get(CommandPlatesConfig.KEY.LOCATION_Y), plates.get(CommandPlatesConfig.KEY.LOCATION.Z), plates.get(CommandPlatesConfig.KEY.LOCATION_WORLD));
+      if (plateAttributeName.equals(config.KEY.LOCATION())) {
+        Map<String, Object> locationMap = (Map<String, Object>)plate.get(plateAttributeName);
+        String locationString = String.format("%s, %s, %s, %s", locationMap.get(config.KEY.LOCATION_X()), locationMap.get(config.KEY.LOCATION_Y()), locationMap.get(config.KEY.LOCATION_Z()), locationMap.get(config.KEY.LOCATION_WORLD()));
         message += String.format("\n%s: %s", plateAttributeName, locationString);
-      } else if (plateAttributeName.equlas(CommandPlatesConfig.KEY.COMMANDS)) {
-        String commandsString = "";
+      } else if (plateAttributeName.equals(config.KEY.COMMANDS())) {
         List<String> commandsList = (List<String>)plate.get(plateAttributeName);
         String commandsString = "commands: ";
-        Integer i = Integer.parseInt(1);
+        Integer i = new Integer(1);
         for (String cmdString : commandsList) {
           commandsString += String.format("%s %s", i.toString(), cmdString);
           i++;
         }
         message += String.format("\n%s: %s", plateAttributeName, commandsString);
       } else {
-        message += String.format("\n%s: %s", plateAttributeName, plates.get(plateAttributeName));
+        message += String.format("\n%s: %s", plateAttributeName, plate.get(plateAttributeName));
       }
     }
 
-    player.sendMessage(String.format("%s%s", plateName, message);
+    player.sendMessage(String.format("%s%s", plateName, message));
+    return true;
   }
 }
