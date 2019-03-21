@@ -157,6 +157,9 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
 
     public String getPlateDisplayString(String plateName) {
       Map<String, Object> plate = getPlate(plateName);
+      if (plate == null) {
+        return null;
+      }
       String author = (String)plate.get(KEY.AUTHOR());
       Boolean console = getConsoleBoolFromPlate(plate);
       Location location = (Location)plate.get(KEY.LOCATION());
@@ -165,6 +168,17 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
       String locationString = String.format("%s, %s, %s", Double.toString(location.getX()), Double.toString(location.getY()), Double.toString(location.getZ()));
 
       return String.format("\'%s\' by %s (%s) @ %s > %s", plateName, author, Boolean.toString(console), locationString, commandList.toString());
+    }
+
+    public String getPlateDisplayStringWithoutName(Map<String, Object> plate) {
+      String author = (String)plate.get(KEY.AUTHOR());
+      Boolean console = getConsoleBoolFromPlate(plate);
+      Location location = (Location)plate.get(KEY.LOCATION());
+      List<String> commandList = getPlateCommandList(plate);
+
+      String locationString = String.format("%s, %s, %s", Double.toString(location.getX()), Double.toString(location.getY()), Double.toString(location.getZ()));
+
+      return String.format("by %s (%s) @ %s > %s", author, Boolean.toString(console), locationString, commandList.toString());
     }
 
     public void setPlate(String plateName, String author, Location location, boolean console, List<String> commandList) {

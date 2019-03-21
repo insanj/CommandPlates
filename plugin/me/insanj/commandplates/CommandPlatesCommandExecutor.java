@@ -93,13 +93,13 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     Location location = player.getLocation();
     config.setPlate(plateName, author, location, console, commandList);
 
-    plugin.getLogger().info(String.format("Created plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
+    plugin.getLogger().info(String.format("Created Plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
 
     Block block = location.getBlock();
     if (config.blockIsPressurePlate(block) == false) {
-      player.sendMessage(ChatColor.BLUE + "Command plate has been set up, but the pressure plate was not detected where you are standing.");
+      player.sendMessage(ChatColor.BLUE + "Command Plate has been set up, but the pressure plate was not detected where you are standing.");
     } else {
-      player.sendMessage(ChatColor.GREEN + "Command plate has been created!");
+      player.sendMessage(ChatColor.GREEN + "Command Plate has been created!");
     }
 
 
@@ -118,8 +118,45 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandInfo(CommandSender sender, String[] args) {
+    if (args.length < 2) {
+        // where you are standing or looking
+        if (!(sender instanceof Player)) {
+          sender.sendMessage(ChatColor.RED + "You must be a player to execute this command.");
+          return false;
+        }
+
+        Player player = (Player) sender;
+        Location playerLoc = player.getLocation();
+        Location location = new Location(playerLoc.getWorld(), Math.floor(playerLoc.getX()), Math.floor(playerLoc.getY()), Math.floor(playerLoc.getZ()));
+        Map<String, Object> plate = config.getActivatedPlate(location);
+        if (plate == null) {
+          Location underneathLocation = location.clone().subtract(0, 1, 0);
+          plate = config.getActivatedPlate(underneathLocation);
+        }
+
+        if (plate == null) {
+          Location lookingAtLocation = player.getTargetBlock(null, 100).getLocation();
+          plate = config.getActivatedPlate(lookingAtLocation);
+        }
+
+        if (plate == null) {
+          sender.sendMessage(ChatColor.RED + "Could not find a Command Plate being targeted.");
+          return false;
+        }
+
+        String plateDisplayString = config.getPlateDisplayStringWithoutName(plate);
+        sender.sendMessage(ChatColor.BLUE + plateDisplayString);
+        return true;
+    }
+
+
     String plateName = args[1];
     String plateDisplayString = config.getPlateDisplayString(plateName);
+    if (plateDisplayString == null) {
+      sender.sendMessage(ChatColor.RED + "No Command Plate found with name: " + plateDisplayString);
+      return false;
+    }
+
     sender.sendMessage(ChatColor.BLUE + plateDisplayString);
     return true;
   }
