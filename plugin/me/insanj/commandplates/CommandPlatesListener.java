@@ -26,8 +26,6 @@ public class CommandPlatesListener implements Listener {
         this.config = config;
     }
 
-
-
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
       if (e == null) { return; }
@@ -64,7 +62,7 @@ public class CommandPlatesListener implements Listener {
     }
 
     private void runCommandFromPlate(Player player, Map<String, Object> plate) {
-      List<String> commandList = config.getActivatedPlateCommandList(plate);
+      List<String> commandList = config.getPlateCommandList(plate);
       for (String commandString : commandList) {
         // Schedules a once off task to occur as soon as possible.
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {

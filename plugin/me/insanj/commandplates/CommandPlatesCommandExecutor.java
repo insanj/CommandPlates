@@ -107,31 +107,11 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandList(CommandSender sender, String[] args) {
+    sender.sendMessage("All Command Plates:");
      Map<String, Map> plates = config.getPlates();
      for (String plateName : plates.keySet()) {
-       Map<String, Map> plate = plates.get(plateName);
-       String message = "";
-       for (String plateAttributeName : plate.keySet()) {
-         if (plateAttributeName.equals(config.KEY.LOCATION())) {
-           Map<String, Object> locationMap = (Map<String, Object>) plate.get(plateAttributeName);
-           String locationString = String.format("%s, %s, %s, %s", plates.get(config.KEY.LOCATION_X()), plates.get(config.KEY.LOCATION_Y()), plates.get(config.KEY.LOCATION_Z()), plates.get(config.KEY.LOCATION_WORLD()));
-           message += String.format("%s: %s", plateAttributeName, locationString);
-         } else if (plateAttributeName.equals(config.KEY.COMMANDS())) {
-           List<String> commandsList = (List<String>)plate.get(plateAttributeName);
-           String commandsString = "commands: ";
-           Integer i = new Integer(1);
-           for (String cmdString : commandsList) {
-             commandsString += String.format("%s %s", i.toString(), cmdString);
-             i++;
-           }
-           message += String.format("%s: %s", plateAttributeName, commandsString);
-         } else {
-           message += String.format("%s: %s", plateAttributeName, plate.get(plateAttributeName));
-         }
-       }
-
-       String plateMessage = String.format("%s plate: %s", plateName, message);
-       sender.sendMessage(plateMessage);
+       String plateDisplayString = config.getPlateDisplayString(plateName);
+       sender.sendMessage(ChatColor.BLUE + plateDisplayString);
      }
 
      return true;
@@ -139,28 +119,8 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
   public boolean onCommandInfo(CommandSender sender, String[] args) {
     String plateName = args[1];
-    Map<String, Map> plate = (Map<String, Map>)config.getPlate(plateName);
-    String message = "";
-    for (String plateAttributeName : plate.keySet()) {
-      if (plateAttributeName.equals(config.KEY.LOCATION())) {
-        Map<String, Object> locationMap = (Map<String, Object>)plate.get(plateAttributeName);
-        String locationString = String.format("%s, %s, %s, %s", locationMap.get(config.KEY.LOCATION_X()), locationMap.get(config.KEY.LOCATION_Y()), locationMap.get(config.KEY.LOCATION_Z()), locationMap.get(config.KEY.LOCATION_WORLD()));
-        message += String.format("\n%s: %s", plateAttributeName, locationString);
-      } else if (plateAttributeName.equals(config.KEY.COMMANDS())) {
-        List<String> commandsList = (List<String>)plate.get(plateAttributeName);
-        String commandsString = "commands: ";
-        Integer i = new Integer(1);
-        for (String cmdString : commandsList) {
-          commandsString += String.format("%s %s", i.toString(), cmdString);
-          i++;
-        }
-        message += String.format("\n%s: %s", plateAttributeName, commandsString);
-      } else {
-        message += String.format("\n%s: %s", plateAttributeName, plate.get(plateAttributeName));
-      }
-    }
-
-    sender.sendMessage(String.format("%s%s", plateName, message));
+    String plateDisplayString = config.getPlateDisplayString(plateName);
+    sender.sendMessage(ChatColor.BLUE + plateDisplayString);
     return true;
   }
 }
