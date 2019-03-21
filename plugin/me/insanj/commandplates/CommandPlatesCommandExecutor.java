@@ -81,8 +81,6 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       i++;
     }
 
-    concatCommand = concatCommand.replaceAll("%player%", player.getName());
-
     String[] commandSplit = concatCommand.split(",");
     ArrayList<String> commandList = new ArrayList<>();
     for (String cmd: commandSplit) {

@@ -68,10 +68,11 @@ public class CommandPlatesListener implements Listener {
         Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
           @Override
           public void run() {
+            String commandWithPlayer = commandString.replaceAll("%player%", player.getName());
             if (config.getConsoleBoolFromPlate(plate) == true) {
-              Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), commandString);
+              Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), commandWithPlayer);
             } else {
-              Bukkit.getServer().dispatchCommand(player, commandString);
+              Bukkit.getServer().dispatchCommand(player, commandWithPlayer);
             }
           }
         });
