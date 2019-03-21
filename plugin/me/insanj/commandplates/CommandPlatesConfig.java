@@ -25,6 +25,7 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     private final CommandPlatesPlugin plugin;
     private Map<String, Map> plates;
     private Map<Location, Map> platesByLocation;
+    private Map<Location, String> plateNamesByLocation;
 
     public CommandPlatesConfig(CommandPlatesPlugin plugin) {
         this.plugin = plugin;
@@ -37,13 +38,13 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
       reload();
 
       this.plates = readPlates();
-      this.platesByLocation = createPlatesByLocation(this.plates);
+      setupPlatesByLocation(this.plates);
     }
 
     public void reload() {
       plugin.reloadConfig();
       this.plates = readPlates();
-      this.platesByLocation = createPlatesByLocation(this.plates);
+      setupPlatesByLocation(this.plates);
     }
 
     private void save() {
@@ -51,6 +52,21 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     }
 
     // loading of values from config file
+    private void setupPlatesByLocation(Map<String, Map> platesToUse) {
+        Map<Location, Map> genPlatesByLocation = new HashMap();
+        Map<Location, String> genPlateNamesByLocation = new HashMap();
+
+        for (String plateName : platesToUse.keySet()) {
+          Map<String, Object> plate = platesToUse.get(plateName);
+          Location plateLocation = getLocationForPlate(plateName);
+          genPlatesByLocation.put(plateLocation, plate);
+          genPlateNamesByLocation.put(plateLocation, plateName);
+        }
+
+        this.platesByLocation = genPlatesByLocation;
+        this.plateNamesByLocation = genPlateNamesByLocation;
+    }
+
     private Map<String, Map> readPlates() {
       final String platesSectionKey = KEY.PLATES();
       ConfigurationSection platesConfigSection = plugin.getConfig().getConfigurationSection(platesSectionKey);
@@ -107,16 +123,6 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
       }
 
       return parsedPlates;
-    }
-
-    private Map<Location, Map> createPlatesByLocation(Map<String, Map> platesToUse) {
-        HashMap<Location, Map> genPlatesByLocation = new HashMap();
-        for (String plateName : platesToUse.keySet()) {
-          Map<String, Object> plate = platesToUse.get(plateName);
-          Location plateLocation = getLocationForPlate(plateName);
-          genPlatesByLocation.put(plateLocation, plate);
-        }
-        return genPlatesByLocation;
     }
 
     // public getters
@@ -203,23 +209,29 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
 
         plate.put(KEY.LOCATION(), integerLocation); // reset location to normal
 
-        platesByLocation.put(integerLocation, plate);
         plates.put(plateName, plate);
+        setupPlatesByLocation(plates);
     }
 
-    public boolean hasPermissionToRunPlate(Player player, Map<String, Object> plate) {
+    public boolean hasPermissionToRunPlate(Player player, String plateName, Map<String, Object> plate) {
       if (player.isOp() || player.hasPermission(PERMISSION.CREATE())) {
         return true;
       }
 
+      if (player.hasPermission(PERMISSION.USE()) == true) {
+        return true;
+      }
+
+      if (player.hasPermission(PERMISSION.PLATE(plateName))) {
+        return true;
+      }
+
+      /*
       String author = (String)plate.get(KEY.AUTHOR());
       if (author.equals(player.getName())) {
         return true;
       }
-
-      else if (player.hasPermission(PERMISSION.PLAYER(author))) {
-        return true;
-      }
+      */
 
       return false;
     }
@@ -227,5 +239,9 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     public boolean blockIsPressurePlate(Block block) {
       return block.getType() == Material.STONE_PLATE || block.getType() == Material.WOOD_PLATE || block.getType() == Material.GOLD_PLATE || block.getType() == Material.IRON_PLATE;
       // List<BlockType> pressurePlateTypes = Arrays.asList(Material.ACACIA_PRESSURE_PLATE, Material.BIRCH_PRESSURE_PLATE, Material.DARK_OAK_PRESSURE_PLATE, Material.HEAVY_WEIGHTED_PRESSURE_PLATE, Material.JUNGLE_PRESSURE_PLATE, Material.LIGHT_WEIGHTED_PRESSURE_PLATE, Material.OAK_PRESSURE_PLATE, Material.SPRUCE_PRESSURE_PLATESTONE_PRESSURE_PLATE);
+    }
+
+    public String getNameForPlateAtLocation(Location location) {
+      return this.plateNamesByLocation.get(location);
     }
 }

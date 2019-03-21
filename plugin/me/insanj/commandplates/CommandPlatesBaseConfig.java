@@ -27,6 +27,7 @@ class CommandPlatesBaseConfig {
     public String CREATE() { return PREFIX() + "admin"; }
     public String USE() { return PREFIX() + ".use"; }
     public String PLAYER(String playerName) { return PREFIX() + "." + playerName; }
+    public String PLATE(String plateName) {return PREFIX() + "." + plateName; }
   }
 
   public final KeyStrings KEY = new KeyStrings();

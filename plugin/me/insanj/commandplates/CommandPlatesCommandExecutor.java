@@ -100,7 +100,6 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       player.sendMessage(ChatColor.GREEN + "Command Plate has been created!");
     }
 
-
     return true;
   }
 
@@ -128,13 +127,13 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
         Location location = new Location(playerLoc.getWorld(), Math.floor(playerLoc.getX()), Math.floor(playerLoc.getY()), Math.floor(playerLoc.getZ()));
         Map<String, Object> plate = config.getActivatedPlate(location);
         if (plate == null) {
-          Location underneathLocation = location.clone().subtract(0, 1, 0);
-          plate = config.getActivatedPlate(underneathLocation);
+          location = location.clone().subtract(0, 1, 0);
+          plate = config.getActivatedPlate(location);
         }
 
         if (plate == null) {
-          Location lookingAtLocation = player.getTargetBlock(null, 100).getLocation();
-          plate = config.getActivatedPlate(lookingAtLocation);
+          location = player.getTargetBlock(null, 100).getLocation();
+          plate = config.getActivatedPlate(location);
         }
 
         if (plate == null) {
@@ -142,7 +141,8 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
           return false;
         }
 
-        String plateDisplayString = config.getPlateDisplayStringWithoutName(plate);
+        String plateName = config.getNameForPlateAtLocation(location);
+        String plateDisplayString = config.getPlateDisplayString(plateName); //WithoutName(plate);
         sender.sendMessage(ChatColor.BLUE + plateDisplayString);
         return true;
     }

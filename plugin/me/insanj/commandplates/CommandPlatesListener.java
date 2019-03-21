@@ -51,8 +51,9 @@ public class CommandPlatesListener implements Listener {
       //    @Override
       //    public void run() {
             Map<String, Object> activatedPlate = config.getActivatedPlate(location);
+            String plateName = config.getNameForPlateAtLocation(location);
             if (activatedPlate != null) {
-              if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
+              if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == true) {
                   listener.plugin.getLogger().info(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
                   listener.runCommandFromPlate(player, activatedPlate);
               }
