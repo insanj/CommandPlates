@@ -26,35 +26,41 @@ public class CommandPlatesListener implements Listener {
         this.config = config;
     }
 
+
+
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
       if (e == null) { return; }
 
-      Block block =  e.getClickedBlock();
-      if (block == null) { return; }
-
-     // List<BlockType> pressurePlateTypes = Arrays.asList(Material.ACACIA_PRESSURE_PLATE, Material.BIRCH_PRESSURE_PLATE, Material.DARK_OAK_PRESSURE_PLATE, Material.HEAVY_WEIGHTED_PRESSURE_PLATE, Material.JUNGLE_PRESSURE_PLATE, Material.LIGHT_WEIGHTED_PRESSURE_PLATE, Material.OAK_PRESSURE_PLATE, Material.SPRUCE_PRESSURE_PLATESTONE_PRESSURE_PLATE);
-
-      if (block.getType() == Material.STONE_PLATE || block.getType() == Material.WOOD_PLATE || block.getType() == Material.GOLD_PLATE || block.getType() == Material.IRON_PLATE) {
-        Location location = block.getLocation();
-        Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
-        Player player = e.getPlayer();
-
-        plugin.getLogger().info(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
-        CommandPlatesListener listener = this;
-//Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-        //    @Override
-        //    public void run() {
-              Map<String, Object> activatedPlate = config.getActivatedPlate(location);
-              if (activatedPlate != null) {
-                if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
-                    listener.plugin.getLogger().info(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
-                    listener.runCommandFromPlate(player, activatedPlate);
-                }
-              }
-      //      }
-      //  });
+      Block block = e.getClickedBlock();
+      if (block == null) {
+        Location underneathLocation = e.getPlayer().getLocation().clone().subtract(0, 1, 0);
+        block = underneathLocation.getBlock();
+        if (config.blockIsPressurePlate(block) == false) {
+          return;
+        }
+      } else if (config.blockIsPressurePlate(block) == false) {
+        return;
       }
+
+      Location location = block.getLocation();
+      Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
+      Player player = e.getPlayer();
+
+      plugin.getLogger().info(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
+      CommandPlatesListener listener = this;
+//Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
+      //    @Override
+      //    public void run() {
+            Map<String, Object> activatedPlate = config.getActivatedPlate(location);
+            if (activatedPlate != null) {
+              if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
+                  listener.plugin.getLogger().info(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
+                  listener.runCommandFromPlate(player, activatedPlate);
+              }
+            }
+    //      }
+    //  });
     }
 
     private void runCommandFromPlate(Player player, Map<String, Object> plate) {

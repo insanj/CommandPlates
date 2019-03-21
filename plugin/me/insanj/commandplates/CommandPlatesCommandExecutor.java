@@ -17,6 +17,7 @@ import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.LivingEntity;
@@ -92,7 +93,15 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     config.setPlate(plateName, author, location, console, commandList);
 
     plugin.getLogger().info(String.format("Created plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
-    player.sendMessage(ChatColor.GREEN + "Command plate has been created!");
+
+    Block block = location.getBlock();
+    if (config.blockIsPressurePlate(block) == false) {
+      player.sendMessage(ChatColor.BLUE + "Command plate has been set up, but the pressure plate was not detected where you are standing.");
+    } else {
+      player.sendMessage(ChatColor.GREEN + "Command plate has been created!");
+    }
+
+
     return true;
   }
 

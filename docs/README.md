@@ -50,6 +50,7 @@ Thank you for reading.
 ## Acknowledgements
 
 - https://bukkit.org/threads/cant-detect-if-player-stands-on-pressure-plate.190533/
+- https://www.spigotmc.org/threads/get-block-player-is-standing-on.131668/
 
 ## Authors
 
