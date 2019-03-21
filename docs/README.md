@@ -1,10 +1,103 @@
-# CommandPlates
+<h1 align="center">
+🏹
+<br/>
+CommandPlates
+</h1>
 
-🏹  bind commands to pressure plates (minecraft 1.12.2)
+<h3 align="center">
+bind commands to pressure plates (minecraft 1.12.2)
+</h3>
 
-## Request
+<p align="center">
+  <a href="https://github.com/insanj/CommandPlates/releases">
+    <img src="https://img.shields.io/github/release/insanj/CommandPlates.svg" />
+    <img src="https://img.shields.io/github/release-date/insanj/CommandPlates.svg" />
+  </a>
 
-https://bukkit.org/threads/pressureplates.478872/
+  <a href="https://github.com/insanj/CommandPlates/">
+    <img src="https://img.shields.io/github/languages/code-size/insanj/CommandPlates.svg" />
+  </a>
+
+  <br/>
+
+  <a href="https://github.com/insanj/CommandPlates/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/insanj/CommandPlates.svg" />
+  </a>
+
+  <a href="https://jdk.java.net/">
+    <img src="https://img.shields.io/badge/java/jdk-8/1.8.0--131-yellow.svg" />
+  </a>
+
+  <a href="https://fabricmc.net/use/">
+    <img src="https://img.shields.io/badge/craftbukkit-1.12.2-purple.svg" />
+  </a>
+
+  <a href="https://bukkit.org/threads/pressureplates.478872/">
+    <img src="https://img.shields.io/badge/💭-Learn%20more%20on%20Bukkit.org-blue.svg" />
+  </a>
+
+  <a href="https://github.com/insanj/CommandPlates/releases">
+    <img src="https://img.shields.io/badge/🚀-Download%20on%20Github-orange.svg" />
+  </a>
+</p>
+
+<br/>
+<br/>
+
+<h2 align="center">
+How to Play
+</h2>
+
+- Drop the `CommandPlates.jar` file</a> into the `plugins` folder on your server.
+- That's it! Only OPs can run commands unless the appropriate permission is given:
+   - `pplates.admin` for the ability to create new plates
+   - `pplates.use` for the ability to activate any plate
+   - `pplates.<plate_name>` for the ability to activate a specific plate
+- Run the following command to set up a Command Plate:
+   - `/pplates create <name> <run_as_console:true/false> <command 1, command 2, ...>`
+- Check in on plates by running (either as a player or as the server console):
+   - `/pplates list`
+   - `/pplates info <optional:plate_name>`
+- Everything will be saved into the `plugins/CommandPlates/config.yml` file, which automatically fills in an example when running for the first time:
+
+```yaml
+plates:
+  Example:
+    author: insanj
+    location:
+      world: world
+      x: 0
+      y: 0
+      z: 0
+    console: true
+    commands:
+      - say Hello
+      - say World!
+
+```
+
+<br/>
+
+<h2 align="center">
+How to Build
+</h2>
+
+```
+make plugin
+```
+
+You will need `craftbukkit-1.12.2.jar` available on your machine. The [makefile](https://github.com/insanj/CommandPlates/blob/master/makefile) expects this to be in an `external/` directory that is not commited to git (you can change the path at the top of the file).
+
+<br/>
+
+<h2 align="center">
+Original Request
+</h2>
+
+<a href="https://bukkit.org/threads/pressureplates.478872/
+">https://bukkit.org/threads/pressureplates.478872/</a>
+
+```
 
 Minecraft version: 1.12.2
 
@@ -46,17 +139,28 @@ Players would also need pressureplate.platename permissions to execute certain p
 config.yml or pressureplates.yml to store all data
 
 Thank you for reading.
+```
 
-## Acknowledgements
+<h2 align="center">
+Acknowledgements
+</h2>
 
 - https://bukkit.org/threads/cant-detect-if-player-stands-on-pressure-plate.190533/
 - https://www.spigotmc.org/threads/get-block-player-is-standing-on.131668/
 
-## Authors
+<h2 align="center">
+Authors
+</h2>
 
-(c) 2019 Julian Weiss. <a href="https://github.com/insanj">github.com/insanj</a>
+<p align="center">
+  (c) 2019 Julian Weiss (insanj). Made with 💚 in Brooklyn. <a href="http://insanj.com">insanj.com</a>.
+</p>
 
-## License
+<br/>
+
+<h2 align="center">
+License
+</h2>
 
 ```
 MIT License
