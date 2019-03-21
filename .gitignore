@@ -1,3 +1,8 @@
+# build files
+server/
+build/
+external/
+
 # Compiled class file
 *.class
 
