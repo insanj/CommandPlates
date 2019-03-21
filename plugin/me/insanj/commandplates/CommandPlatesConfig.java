@@ -113,11 +113,28 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     }
 
     public Map getActivatedPlate(Location location) {
-      return new HashMap();
+      // TODO
+      Map<String, Map> plates = (Map<String, Map>) getPlates();
+      int threshold = 1; // blocks away from pressure plate
+      for (String plateName : plates.keySet()) {
+        Map<String, Object> plate = (Map<String, Object>) plates.get(plateName);
+        Location plateLocation = getLocationForPlate(plateName);
+        if (location.distance(plateLocation) <= threshold) {
+          return plate;
+        }
+      }
+
+      return null;
     }
 
     public List<String> getActivatedPlateCommandList(Map plate) {
-      return new ArrayList<String>();
+      List<String> commandList = (List<String>)plate.get(KEY.COMMANDS());
+      return commandList;
+    }
+
+    public Location getLocationForPlate(String plateName) {
+      Map plate = getPlate(plateName);
+      return (Location) plate.get(KEY.LOCATION()); // already parsed in readPlates()
     }
 
     public void setPlate(String plateName, String author, Location location, boolean console, List<String> commandList) {
@@ -137,6 +154,8 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
         String platesConfigSectionPath = KEY.PLATES() + "." + plateName;
         plugin.getConfig().createSection(platesConfigSectionPath, plate);
         plugin.saveConfig();
+
+        plate.put(KEY.LOCATION(), location); // reset location to normal
         plates.put(plateName, plate);
     }
 

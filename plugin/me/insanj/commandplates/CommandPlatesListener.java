@@ -28,10 +28,16 @@ public class CommandPlatesListener implements Listener {
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent e) {
+      if (e == null) { return; }
+
       Block block =  e.getClickedBlock();
+      if (block == null) { return; }
+
       if (block.getType() == Material.STONE_PLATE && block.getRelative(BlockFace.DOWN).getType() == Material.STONE) {
         Location location = block.getLocation();
         Player player = e.getPlayer();
+
+        plugin.getLogger().info(String.format("Detected pressure plate @ %s, checking if it's command activated...", location.toString()));
         CommandPlatesListener listener = this;
         Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
             @Override
@@ -39,6 +45,7 @@ public class CommandPlatesListener implements Listener {
               Map<String, Object> activatedPlate = config.getActivatedPlate(location);
               if (activatedPlate != null) {
                 if (listener.config.hasPermissionToRunPlate(player, activatedPlate) == true) {
+                    listener.plugin.getLogger().info(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
                     listener.runCommandFromPlate(activatedPlate);
                 }
               }

@@ -3,7 +3,7 @@ package me.insanj.commandplates;
 import java.lang.Math;
 import java.util.Date;
 import java.util.List;
-import java.util.List;
+import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.Map;
 import java.util.HashMap;
@@ -72,34 +72,28 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     String plateName = args[1];
     boolean console = Boolean.parseBoolean(args[2]);
 
-    ArrayList<String> commandList = new ArrayList<String>();
-    String incompleteCommand = "";
-    int i = -1;
+    String concatCommand = "";
+    int i = 0;
     for (String arg : args) {
+      if (i <= 2) {  }
+      else if (i == 3) { concatCommand = arg; }
+      else { concatCommand += String.format(" %s", arg); }
       i++;
-      if (i <= 2) {
-        continue;
-      }
-
-      String[] split = arg.split(",");
-      if (split.length <= 1) {
-        incompleteCommand += arg;
-      } else {
-        for (String splitCmd : split) {
-          incompleteCommand += splitCmd;
-          commandList.add(new String(incompleteCommand));
-          incompleteCommand = "";
-        }
-      }
     }
 
-    if (incompleteCommand.length() > 0) {
-      commandList.add(incompleteCommand);
+    plugin.getLogger().info("concatCommand = " + concatCommand);
+
+    String[] commandSplit = concatCommand.split(",");
+    ArrayList<String> commandList = new ArrayList<>();
+    for (String cmd: commandSplit) {
+      commandList.add(cmd.trim());
     }
 
     String author = player.getName();
     Location location = player.getLocation();
     config.setPlate(plateName, author, location, console, commandList);
+
+    plugin.getLogger().info(String.format("Created plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
     player.sendMessage(ChatColor.GREEN + "Command plate has been created!");
     return true;
   }
