@@ -48,6 +48,9 @@ bind commands to pressure plates (minecraft 1.12.2)
 How to Play
 </h2>
 
+<img src="step_one.png"  width="50%"/><img src="step_two.png" width="50%"/>
+<img src="demo.gif" />
+
 - Drop the `CommandPlates.jar` file into the `plugins` folder on your server.
 - That's it! Only OPs can run commands unless the appropriate permission is given:
    - `pplates.admin` for the ability to create new plates
