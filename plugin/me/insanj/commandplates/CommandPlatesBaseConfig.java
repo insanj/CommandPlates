@@ -24,10 +24,10 @@ class CommandPlatesBaseConfig {
 
   class PermissionStrings {
     public String PREFIX() { return "pplates"; }
-    public String CREATE() { return PREFIX() + "admin"; }
-    public String USE() { return PREFIX() + ".use"; }
-    public String PLAYER(String playerName) { return PREFIX() + "." + playerName; }
-    public String PLATE(String plateName) {return PREFIX() + "." + plateName; }
+    public String CREATE() { return String.format("%s.%s", PREFIX(), "admin"); }
+    public String USE() { return String.format("%s.%s",  PREFIX(), "use"); }
+    public String PLAYER(String playerName) { return String.format("%s.%s", PREFIX(), playerName); }
+    public String PLATE(String plateName) {return String.format("%s.%s", PREFIX(), plateName); }
   }
 
   public final KeyStrings KEY = new KeyStrings();
