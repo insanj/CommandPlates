@@ -48,8 +48,10 @@ bind commands to pressure plates (minecraft 1.12.2)
 How to Play
 </h2>
 
-<img src="step_one.png"  width="50%"/><img src="step_two.png" width="50%"/>
-<img src="demo.gif" />
+<p align="center">
+  <img src="step_one.png"  width="50%"/><img src="step_two.png" width="50%"/>
+  <img align="center" src="https://user-images.githubusercontent.com/951011/54854134-55503200-4cc8-11e9-9084-28bbb633c87b.gif" />
+</p>
 
 - Drop the `CommandPlates.jar` file into the `plugins` folder on your server.
 - That's it! Only OPs can run commands unless the appropriate permission is given:
