@@ -5,6 +5,7 @@ package me.insanj.commandplates;
 */
 class CommandPlatesBaseConfig {
   class KeyStrings {
+    public String DEBUG() { return "debug"; }
     public String PLATES() { return "plates"; };
     public String AUTHOR() { return "author"; }
     public String LOCATION() { return "location"; }

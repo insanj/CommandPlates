@@ -1,6 +1,6 @@
 name: CommandPlates
 main: me.insanj.commandplates.CommandPlatesPlugin
-version: 0.3.2
+version: 0.3.2.1
 description: bind commands to pressure plates
 api-version: 1.12.2
 commands:

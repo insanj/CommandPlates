@@ -91,7 +91,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     Location location = player.getLocation();
     config.setPlate(plateName, author, location, console, commandList);
 
-    plugin.getLogger().info(String.format("Created Plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
+    config.debugLog(String.format("Created Plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
 
     Block block = location.getBlock();
     if (config.blockIsPressurePlate(block) == false) {

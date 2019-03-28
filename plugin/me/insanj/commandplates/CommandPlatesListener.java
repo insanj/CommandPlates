@@ -45,7 +45,7 @@ public class CommandPlatesListener implements Listener {
       Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
       Player player = e.getPlayer();
 
-      plugin.getLogger().info(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
+      config.debugLog(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
       CommandPlatesListener listener = this;
 //Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
       //    @Override
@@ -54,7 +54,7 @@ public class CommandPlatesListener implements Listener {
             String plateName = config.getNameForPlateAtLocation(location);
             if (activatedPlate != null) {
               if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == true) {
-                  listener.plugin.getLogger().info(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
+                  listener.config.debugLog(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
                   listener.runCommandFromPlate(player, activatedPlate);
               }
             }

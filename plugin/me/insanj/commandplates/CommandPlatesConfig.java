@@ -32,6 +32,16 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
         setup();
     }
 
+    public void debugLog(String message) {
+      if (isDebugLogEnabled()) {
+        plugin.getLogger().info(message);
+      }
+    }
+
+    private boolean isDebugLogEnabled() {
+      return plugin.getConfig().getBoolean(KEY.DEBUG());
+    }
+
     // basic config management
     private void setup() {
       plugin.saveDefaultConfig();

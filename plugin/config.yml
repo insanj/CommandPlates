@@ -1,4 +1,4 @@
-
+debug: true
 plates:
   Example:
     author: insanj

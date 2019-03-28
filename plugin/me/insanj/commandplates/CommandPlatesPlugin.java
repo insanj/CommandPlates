@@ -47,6 +47,6 @@ public class CommandPlatesPlugin extends JavaPlugin {
     }
 
     public void logError(Throwable e) {
-      getLogger().info(ExceptionUtils.getStackTrace(e));
+      config.debugLog(ExceptionUtils.getStackTrace(e));
     }
 }
