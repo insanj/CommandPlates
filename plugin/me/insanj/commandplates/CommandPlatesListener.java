@@ -4,6 +4,8 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -20,10 +22,13 @@ import org.bukkit.block.Block;
 public class CommandPlatesListener implements Listener {
     private final CommandPlatesPlugin plugin;
     private final CommandPlatesConfig config;
+    private Map<String, Map<Location, Date>> lastPlayerActivations;
+    private final long activationBottleneck = 1;
 
     public CommandPlatesListener(CommandPlatesPlugin plugin, CommandPlatesConfig config) {
         this.plugin = plugin;
         this.config = config;
+        this.lastPlayerActivations = new HashMap();
     }
 
     @EventHandler
@@ -45,21 +50,29 @@ public class CommandPlatesListener implements Listener {
       Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
       Player player = e.getPlayer();
 
+      Map<Location, Date> playerActivations = lastPlayerActivations.get(player.getName());
+      if (playerActivations != null) {
+        Date lastTimePlayerActivatedThisPlate = playerActivations.get(integerLocation);
+        if (lastTimePlayerActivatedThisPlate != null && getDateDiff(lastTimePlayerActivatedThisPlate, new Date(), TimeUnit.SECONDS) < activationBottleneck) {
+          return;
+        }
+      }
+
+      Map<Location, Date> updatedActivations = new HashMap();
+      updatedActivations.put(integerLocation, new Date());
+      lastPlayerActivations.put(player.getName(), updatedActivations);
+
       config.debugLog(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
+
       CommandPlatesListener listener = this;
-//Bukkit.getScheduler().runTaskAsynchronously(plugin, new Runnable() {
-      //    @Override
-      //    public void run() {
-            Map<String, Object> activatedPlate = config.getActivatedPlate(location);
-            String plateName = config.getNameForPlateAtLocation(location);
-            if (activatedPlate != null) {
-              if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == true) {
-                  listener.config.debugLog(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
-                  listener.runCommandFromPlate(player, activatedPlate);
-              }
-            }
-    //      }
-    //  });
+      Map<String, Object> activatedPlate = config.getActivatedPlate(location);
+      String plateName = config.getNameForPlateAtLocation(location);
+      if (activatedPlate != null) {
+        if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == true) {
+            listener.config.debugLog(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
+            listener.runCommandFromPlate(player, activatedPlate);
+        }
+      }
     }
 
     private void runCommandFromPlate(Player player, Map<String, Object> plate) {
@@ -80,4 +93,16 @@ public class CommandPlatesListener implements Listener {
       }
     }
 
+  /**
+    https://stackoverflow.com/questions/1555262/calculating-the-difference-between-two-java-date-instances
+   * Get a diff between two dates
+   * @param date1 the oldest date
+   * @param date2 the newest date
+   * @param timeUnit the unit in which you want the diff
+   * @return the diff value, in the provided unit
+ */
+  private long getDateDiff(Date date1, Date date2, TimeUnit timeUnit) {
+    long diffInMillies = date2.getTime() - date1.getTime();
+    return timeUnit.convert(diffInMillies,TimeUnit.MILLISECONDS);
+  }
 }
