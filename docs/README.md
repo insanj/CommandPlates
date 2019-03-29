@@ -81,6 +81,18 @@ plates:
 
 ```
 
+<h3 align="center">
+Example Permissions
+</h3>
+
+```yaml
+server.basics:
+  description: Basic permissions for the server.
+  default: not-op
+  children:
+    pplates.chickenpasta: true
+```
+
 <br/>
 
 <h2 align="center">

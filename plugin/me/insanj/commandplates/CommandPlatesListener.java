@@ -84,7 +84,7 @@ public class CommandPlatesListener implements Listener {
           public void run() {
             String commandWithPlayer = commandString.replaceAll("%player%", player.getName());
             if (config.getConsoleBoolFromPlate(plate) == true) {
-              Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), commandWithPlayer);
+              Bukkit.getServer().dispatchCommand(Bukkit.getServer().getConsoleSender(), commandWithPlayer);
             } else {
               Bukkit.getServer().dispatchCommand(player, commandWithPlayer);
             }
