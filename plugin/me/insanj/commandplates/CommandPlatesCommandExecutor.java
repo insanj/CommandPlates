@@ -64,12 +64,29 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       return true;
     }
 
-    if (args.length < 4) {
-      player.sendMessage(ChatColor.RED + "Not enough arguments included in command.");
+    Location location = player.getLocation();
+    if (location == null) {
+      player.sendMessage(ChatColor.RED + "Unable to determine your current location!");
+      return true;
+    }
+
+    String existingPlateName = config.getNameForPlateAtLocation(location);
+    if (existingPlateName != null) {
+      player.sendMessage(ChatColor.RED + "Plate \'"+existingPlateName+"\' already exists at this location.");
+      return true;
+    }
+
+    if (args.length < 4 || (args.length >= 2 && args[1] == null)) {
+      player.sendMessage(ChatColor.RED + "Unable to read arguments included in command.");
       return false;
     }
 
     String plateName = args[1];
+    if (config.getPlate(plateName) != null) {
+      player.sendMessage(ChatColor.RED + "A plate already exists with the name '"+plateName+"'");
+      return true;
+    }
+
     boolean console = Boolean.parseBoolean(args[2]);
 
     String concatCommand = "";
@@ -88,7 +105,6 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     }
 
     String author = player.getName();
-    Location location = player.getLocation();
     config.setPlate(plateName, author, location, console, commandList);
 
     config.debugLog(String.format("Created Plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
