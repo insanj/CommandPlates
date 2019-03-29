@@ -1,4 +1,4 @@
-debug: true
+debug: false
 plates:
   Example:
     author: insanj

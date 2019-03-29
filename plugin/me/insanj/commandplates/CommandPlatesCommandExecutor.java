@@ -66,11 +66,8 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       return true;
     }
 
-    Location location = player.getLocation();
-    if (location == null) {
-      player.sendMessage(ChatColor.RED + "Unable to determine your current location!");
-      return true;
-    }
+    Location playerLoc = player.getLocation();
+    Location location = new Location(playerLoc.getWorld(), Math.floor(playerLoc.getX()), Math.floor(playerLoc.getY()), Math.floor(playerLoc.getZ()));
 
     String existingPlateName = config.getNameForPlateAtLocation(location);
     if (existingPlateName != null) {
@@ -86,6 +83,12 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     String plateName = args[1];
     if (config.getPlate(plateName) != null) {
       player.sendMessage(ChatColor.RED + "A plate already exists with the name '"+plateName+"'");
+      return true;
+    }
+
+    Block block = location.getBlock();
+    if (config.blockIsPressurePlate(block) == false) {
+      player.sendMessage(ChatColor.BLUE + "No pressure plate detected where you are standing.");
       return true;
     }
 
@@ -111,13 +114,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
     config.debugLog(String.format("Created Plate with metadata:  name=%s, author=%s, location=%s, console=%s, commandList=%s", plateName, author, location.toString(), Boolean.toString(console), commandList.toString()));
 
-    Block block = location.getBlock();
-    if (config.blockIsPressurePlate(block) == false) {
-      player.sendMessage(ChatColor.BLUE + "Command Plate has been set up, but the pressure plate was not detected where you are standing.");
-    } else {
-      player.sendMessage(ChatColor.GREEN + "Command Plate has been created!");
-    }
-
+    player.sendMessage(ChatColor.GREEN + "Command Plate has been created!");
     return true;
   }
 
