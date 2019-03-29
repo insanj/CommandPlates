@@ -21,6 +21,7 @@ class CommandPlatesBaseConfig {
     public String CREATE() { return "create"; }
     public String LIST() { return "list"; }
     public String INFO() { return "info"; }
+    public String REMOVE() { return "remove"; }
   }
 
   class PermissionStrings {

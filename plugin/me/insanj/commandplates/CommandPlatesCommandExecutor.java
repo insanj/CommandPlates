@@ -52,6 +52,8 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
       Player player = (Player) sender;
       return onCommandCreate(player, args);
+    } else if (argumentString.equals(config.COMMAND.REMOVE())) {
+      return onCommandRemove(sender, args);
     }
 
     return false;
@@ -115,6 +117,30 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     } else {
       player.sendMessage(ChatColor.GREEN + "Command Plate has been created!");
     }
+
+    return true;
+  }
+
+  public boolean onCommandRemove(CommandSender sender, String[] args) {
+    String removePermissionString = config.PERMISSION.CREATE();
+    if (sender instanceof Player && (((Player)sender).hasPermission(removePermissionString) == false || ((Player)sender).isOp() == false)) {
+      sender.sendMessage(ChatColor.RED + "You do not have permission to remove command plates.");
+      return true;
+    }
+
+    if (args.length < 2) {
+      sender.sendMessage(ChatColor.RED + "Unable to read arguments included in command.");
+      return false;
+    }
+
+    String plateName = args[1];
+    if (config.getPlate(plateName) == null) {
+      sender.sendMessage(ChatColor.RED + "No plate found with the name '"+plateName+"'");
+      return true;
+    }
+
+    config.removePlate(plateName);
+    sender.sendMessage(ChatColor.BLUE + "Removed plate with name: " + plateName);
 
     return true;
   }
