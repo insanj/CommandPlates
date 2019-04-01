@@ -60,12 +60,15 @@ How to Play
    - `pplates.<plate_name>` for the ability to activate a specific plate
 - Run the following command to set up a Command Plate:
    - `/pplates create <name> <run_as_console:true/false> <command 1, command 2, ...>`
+- You can remove plates with the command:
+   - `/pplates remove <plate_name>`
 - Check in on plates by running (either as a player or as the server console):
    - `/pplates list`
    - `/pplates info <optional:plate_name>`
 - Everything will be saved into the `plugins/CommandPlates/config.yml` file, which automatically fills in an example when running for the first time:
 
 ```yaml
+debug: false
 plates:
   Example:
     author: insanj
