@@ -89,7 +89,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     }
 
     Block block = location.getBlock();
-    if (config.blockIsPressurePlate(block) == false) {
+    if (config.blockIsPressurePlate(block) == false && config.blockIsWeightedPressurePlate(block) == false) {
       player.sendMessage(ChatColor.BLUE + "No pressure plate detected where you are standing.");
       return true;
     }

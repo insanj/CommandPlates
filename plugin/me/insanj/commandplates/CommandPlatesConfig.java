@@ -253,8 +253,13 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     }
 
     public boolean blockIsPressurePlate(Block block) {
-      return block.getType() == Material.STONE_PLATE || block.getType() == Material.WOOD_PLATE || block.getType() == Material.GOLD_PLATE || block.getType() == Material.IRON_PLATE;
-      // List<BlockType> pressurePlateTypes = Arrays.asList(Material.ACACIA_PRESSURE_PLATE, Material.BIRCH_PRESSURE_PLATE, Material.DARK_OAK_PRESSURE_PLATE, Material.HEAVY_WEIGHTED_PRESSURE_PLATE, Material.JUNGLE_PRESSURE_PLATE, Material.LIGHT_WEIGHTED_PRESSURE_PLATE, Material.OAK_PRESSURE_PLATE, Material.SPRUCE_PRESSURE_PLATESTONE_PRESSURE_PLATE);
+      if (block == null) { return false; }
+      return block.getType() == Material.STONE_PLATE || block.getType() == Material.WOOD_PLATE;
+    }
+
+    public boolean blockIsWeightedPressurePlate(Block block) {
+      if (block == null) { return false; }
+      return block.getType() == Material.GOLD_PLATE || block.getType() == Material.IRON_PLATE;
     }
 
     public String getNameForPlateAtLocation(Location location) {

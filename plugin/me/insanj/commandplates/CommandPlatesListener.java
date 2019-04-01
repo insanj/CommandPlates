@@ -23,12 +23,15 @@ public class CommandPlatesListener implements Listener {
     private final CommandPlatesPlugin plugin;
     private final CommandPlatesConfig config;
     private Map<String, Map<Location, Date>> lastPlayerActivations;
+    private Map<String, String> currentlyActivatedPlateName;
     private final long activationBottleneck = 1;
 
     public CommandPlatesListener(CommandPlatesPlugin plugin, CommandPlatesConfig config) {
         this.plugin = plugin;
         this.config = config;
+
         this.lastPlayerActivations = new HashMap();
+        this.currentlyActivatedPlateName = new HashMap();
     }
 
     @EventHandler
@@ -39,17 +42,19 @@ public class CommandPlatesListener implements Listener {
       if (block == null) {
         Location underneathLocation = e.getPlayer().getLocation().clone().subtract(0, 1, 0);
         block = underneathLocation.getBlock();
-        if (config.blockIsPressurePlate(block) == false) {
-          return;
-        }
-      } else if (config.blockIsPressurePlate(block) == false) {
+      }
+
+      boolean isPressurePlate = config.blockIsPressurePlate(block);
+      boolean isWeightedPressurePlate = config.blockIsWeightedPressurePlate(block);
+      if (isPressurePlate == false && isWeightedPressurePlate == false) {
         return;
       }
 
+      Player player = e.getPlayer();
       Location location = block.getLocation();
       Location integerLocation = new Location(location.getWorld(), Math.floor(location.getX()), Math.floor(location.getY()), Math.floor(location.getZ()));
-      Player player = e.getPlayer();
 
+      // bottleneck at 1 activation per sec
       Map<Location, Date> playerActivations = lastPlayerActivations.get(player.getName());
       if (playerActivations != null) {
         Date lastTimePlayerActivatedThisPlate = playerActivations.get(integerLocation);
@@ -67,12 +72,28 @@ public class CommandPlatesListener implements Listener {
       CommandPlatesListener listener = this;
       Map<String, Object> activatedPlate = config.getActivatedPlate(location);
       String plateName = config.getNameForPlateAtLocation(location);
-      if (activatedPlate != null) {
-        if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == true) {
-            listener.config.debugLog(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
-            listener.runCommandFromPlate(player, activatedPlate);
+      if (activatedPlate == null) {
+        return; // no plate found at location
+      }
+
+      if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == false) {
+        return; // does not have permission to run plate
+      }
+
+      // check if this plate is still marked as "active"
+      if (isWeightedPressurePlate == true) {
+        String alreadyActivatedPlateName = currentlyActivatedPlateName.get(player.getName());
+        if (alreadyActivatedPlateName != null && alreadyActivatedPlateName.equals(plateName)) {
+          if (block.isBlockIndirectlyPowered() == true) { // 1st thing weighted sends is FALSE, then rest are TRUE
+            return; // we are leaving the plate / deactivating
+          }
         }
       }
+
+      listener.config.debugLog(String.format("Activating plate %s for player %s!", activatedPlate.toString(), player.toString()));
+
+      currentlyActivatedPlateName.put(player.getName(), plateName); // only needed for weighted plates
+      listener.runCommandFromPlate(player, activatedPlate);
     }
 
     private void runCommandFromPlate(Player player, Map<String, Object> plate) {
