@@ -46,9 +46,6 @@ public class CommandPlatesConfig extends CommandPlatesBaseConfig {
     private void setup() {
       plugin.saveDefaultConfig();
       reload();
-
-      this.plates = readPlates();
-      setupPlatesByLocation(this.plates);
     }
 
     public void reload() {

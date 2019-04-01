@@ -24,6 +24,10 @@ commands:
     description: Info about the plate you are looking at, or if not found, the one sent as a parameter.
     usage: |
       /pplates info <plate_name>
+  pplates reload:
+    description: Reload any changes to the config file
+    usage: |
+      /pplates reload
 permissions:
   pplates.admin:
     description: Gives access to /pplates create

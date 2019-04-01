@@ -54,6 +54,8 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       return onCommandCreate(player, args);
     } else if (argumentString.equals(config.COMMAND.REMOVE())) {
       return onCommandRemove(sender, args);
+    } else if (argumentString.equals(config.COMMAND.RELOAD())) {
+      return onCommandReload(sender, args);
     }
 
     return false;
@@ -195,6 +197,12 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     }
 
     sender.sendMessage(ChatColor.BLUE + plateDisplayString);
+    return true;
+  }
+
+  public boolean onCommandReload(CommandSender sender, String[] args) {
+    config.reload();
+    sender.sendMessage(ChatColor.GREEN + "Command Plates config reloaded!");
     return true;
   }
 }
