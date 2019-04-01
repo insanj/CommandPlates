@@ -201,6 +201,15 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandReload(CommandSender sender, String[] args) {
+    if (sender instanceof Player) {
+      Player player = (Player)sender;
+      String createPermissionString = config.PERMISSION.CREATE();
+      if (player.hasPermission(createPermissionString) == false || player.isOp() == false) {
+        sender.sendMessage(ChatColor.RED + "You must be an operator or have the pplates.create permission to use this command.");
+        return false;
+      }
+    }
+
     config.reload();
     sender.sendMessage(ChatColor.GREEN + "Command Plates config reloaded!");
     return true;
