@@ -67,7 +67,6 @@ public class CommandPlatesListener implements Listener {
       updatedActivations.put(integerLocation, new Date());
       lastPlayerActivations.put(player.getName(), updatedActivations);
 
-      config.debugLog(String.format("Detected %s on pressure plate @ %s, checking if it's command activated...", player.getName(), integerLocation.toString()));
 
       CommandPlatesListener listener = this;
       Map<String, Object> activatedPlate = config.getActivatedPlate(location);
