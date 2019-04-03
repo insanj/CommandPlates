@@ -47,7 +47,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     } else if (argumentString.equals(config.COMMAND.CREATE())) {
       if (!(sender instanceof Player)) {
         sender.sendMessage(ChatColor.RED + "You must be a player to execute this command.");
-        return false;
+        return true;
       }
 
       Player player = (Player) sender;
@@ -129,7 +129,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
     if (args.length < 2) {
       sender.sendMessage(ChatColor.RED + "Unable to read arguments included in command.");
-      return false;
+      return true;
     }
 
     String plateName = args[1];
@@ -160,7 +160,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
         // where you are standing or looking
         if (!(sender instanceof Player)) {
           sender.sendMessage(ChatColor.RED + "You must be a player to execute this command.");
-          return false;
+          return true;
         }
 
         Player player = (Player) sender;
@@ -179,7 +179,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
         if (plate == null) {
           sender.sendMessage(ChatColor.RED + "Could not find a Command Plate being targeted.");
-          return false;
+          return true;
         }
 
         String plateName = config.getNameForPlateAtLocation(location);
@@ -193,7 +193,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     String plateDisplayString = config.getPlateDisplayString(plateName);
     if (plateDisplayString == null) {
       sender.sendMessage(ChatColor.RED + "No Command Plate found with name: " + plateDisplayString);
-      return false;
+      return true;
     }
 
     sender.sendMessage(ChatColor.BLUE + plateDisplayString);
@@ -206,7 +206,7 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
       String createPermissionString = config.PERMISSION.CREATE();
       if (player.hasPermission(createPermissionString) == false || player.isOp() == false) {
         sender.sendMessage(ChatColor.RED + "You must be an operator or have the pplates.create permission to use this command.");
-        return false;
+        return true;
       }
     }
 

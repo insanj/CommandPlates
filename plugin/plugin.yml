@@ -5,12 +5,7 @@ description: bind commands to pressure plates
 api-version: 1.12.2
 commands:
   pplates:
-    description: Get all CommandPlates commands
-    usage: |
-      /pplates
-      /pplates create <plate_name> <true:false> <command_one, command_two>
-      /pplates list
-      /pplates info <plate_name>
+    description: Does nothing by itself
   pplates create:
     permission: pplates.admin
     description: Gives a pressure plate in which you can place down to execute the command. If set to true, the command will be execute by console. If set to false, it will be execute by the player. Use %player% in the command to replace the players name in commands.
