@@ -67,13 +67,14 @@ public class CommandPlatesListener implements Listener {
       updatedActivations.put(integerLocation, new Date());
       lastPlayerActivations.put(player.getName(), updatedActivations);
 
-
       CommandPlatesListener listener = this;
       Map<String, Object> activatedPlate = config.getActivatedPlate(location);
-      String plateName = config.getNameForPlateAtLocation(location);
       if (activatedPlate == null) {
         return; // no plate found at location
       }
+
+      String plateName = config.getNameForPlateAtLocation(location);
+      config.debugLog(String.format("Detected %s on Command Plate %s @ %s, checking if it's command activated...", player.getName(), plateName, integerLocation.toString()));
 
       if (listener.config.hasPermissionToRunPlate(player, plateName, activatedPlate) == false) {
         return; // does not have permission to run plate

@@ -24,6 +24,7 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.command.ConsoleCommandSender;
 
 public class CommandPlatesCommandExecutor implements CommandExecutor {
   private final CommandPlatesPlugin plugin;
@@ -40,11 +41,19 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
     }
 
     String argumentString = args[0];
+    if (hasPermissionForCommand(sender, argumentString) == false) {
+      return false;
+    }
+
     if (argumentString.equals(config.COMMAND.LIST())) {
       return onCommandList(sender, args);
-    } else if (argumentString.equals(config.COMMAND.INFO())) {
+    }
+
+    if (argumentString.equals(config.COMMAND.INFO())) {
       return onCommandInfo(sender, args);
-    } else if (argumentString.equals(config.COMMAND.CREATE())) {
+    }
+
+    if (argumentString.equals(config.COMMAND.CREATE())) {
       if (!(sender instanceof Player)) {
         sender.sendMessage(ChatColor.RED + "You must be a player to execute this command.");
         return true;
@@ -52,22 +61,57 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
       Player player = (Player) sender;
       return onCommandCreate(player, args);
-    } else if (argumentString.equals(config.COMMAND.REMOVE())) {
+    }
+
+    if (argumentString.equals(config.COMMAND.REMOVE())) {
       return onCommandRemove(sender, args);
-    } else if (argumentString.equals(config.COMMAND.RELOAD())) {
+    }
+
+    if (argumentString.equals(config.COMMAND.RELOAD())) {
       return onCommandReload(sender, args);
     }
 
     return false;
   }
 
-  public boolean onCommandCreate(Player player, String[] args) {
-    String createPermissionString = config.PERMISSION.CREATE();
-    if (player.hasPermission(createPermissionString) == false || player.isOp() == false) {
-      player.sendMessage(ChatColor.RED + "You do not have permission to create new command plates.");
+  public boolean hasPermissionForCommand(CommandSender sender, String cmdString) {
+    if (sender == null || cmdString == null || cmdString.length() <= 0) {
+      return false;
+    }
+
+    if (sender instanceof ConsoleCommandSender) {
+      return true; // although some commands won't quite work
+    }
+
+    if (!(sender instanceof Player)) {
+      return false;
+    }
+
+    Player player = (Player)sender;
+    List<String> availableCmds = Arrays.asList(config.COMMAND.ALL());
+    String permissionCmd = String.format("%s.%s", config.PERMISSION.PREFIX(), cmdString);
+
+    if (availableCmds.contains(permissionCmd) == false) {
+      return false;
+    }
+
+    if (player.isOp() == true) {
       return true;
     }
 
+    if (player.hasPermission(config.PERMISSION.ADMIN())) {
+      return true;
+    }
+
+    if (player.hasPermission(permissionCmd)) {
+      return true;
+    }
+
+    return false;
+  }
+
+
+  public boolean onCommandCreate(Player player, String[] args) {
     Location playerLoc = player.getLocation();
     Location location = new Location(playerLoc.getWorld(), Math.floor(playerLoc.getX()), Math.floor(playerLoc.getY()), Math.floor(playerLoc.getZ()));
 
@@ -121,12 +165,6 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandRemove(CommandSender sender, String[] args) {
-    String removePermissionString = config.PERMISSION.CREATE();
-    if (sender instanceof Player && (((Player)sender).hasPermission(removePermissionString) == false || ((Player)sender).isOp() == false)) {
-      sender.sendMessage(ChatColor.RED + "You do not have permission to remove command plates.");
-      return true;
-    }
-
     if (args.length < 2) {
       sender.sendMessage(ChatColor.RED + "Unable to read arguments included in command.");
       return true;
@@ -146,13 +184,13 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
 
   public boolean onCommandList(CommandSender sender, String[] args) {
     sender.sendMessage("All Command Plates:");
-     Map<String, Map> plates = config.getPlates();
-     for (String plateName : plates.keySet()) {
-       String plateDisplayString = config.getPlateDisplayString(plateName);
-       sender.sendMessage(ChatColor.BLUE + plateDisplayString);
-     }
+    Map<String, Map> plates = config.getPlates();
+    for (String plateName : plates.keySet()) {
+      String plateDisplayString = config.getPlateDisplayString(plateName);
+      sender.sendMessage(ChatColor.BLUE + plateDisplayString);
+    }
 
-     return true;
+    return true;
   }
 
   public boolean onCommandInfo(CommandSender sender, String[] args) {
@@ -201,15 +239,6 @@ public class CommandPlatesCommandExecutor implements CommandExecutor {
   }
 
   public boolean onCommandReload(CommandSender sender, String[] args) {
-    if (sender instanceof Player) {
-      Player player = (Player)sender;
-      String createPermissionString = config.PERMISSION.CREATE();
-      if (player.hasPermission(createPermissionString) == false || player.isOp() == false) {
-        sender.sendMessage(ChatColor.RED + "You must be an operator or have the pplates.create permission to use this command.");
-        return true;
-      }
-    }
-
     config.reload();
     sender.sendMessage(ChatColor.GREEN + "Command Plates config reloaded!");
     return true;

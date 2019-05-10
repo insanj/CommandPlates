@@ -1,32 +1,46 @@
 name: CommandPlates
-main: me.insanj.commandplates.CommandPlatesPlugin
-version: 0.3.5
+author: insanj
 description: bind commands to pressure plates
+website: https://github.com/insanj/CommandPlates
+prefix: CommandPlates
+main: me.insanj.commandplates.CommandPlatesPlugin
+version: 1.0.0-pre1
 api-version: 1.12.2
 commands:
   pplates:
     description: Does nothing by itself
   pplates create:
-    permission: pplates.admin
-    description: Gives a pressure plate in which you can place down to execute the command. If set to true, the command will be execute by console. If set to false, it will be execute by the player. Use %player% in the command to replace the players name in commands.
+    description: Creates a Command Plate
     usage: |
       /pplates create <plate_name> <true:false> <command_one, command_two>
   pplates list:
-    description: Shows all available pressure plates
+    description: Shows all Command Plates 
     usage: |
       /pplates list
   pplates info:
-    description: Info about the plate you are looking at, or if not found, the one sent as a parameter.
+    description: Gets info about the Command Plate you are looking at, or if not found, the one sent as a parameter
     usage: |
       /pplates info <plate_name>
   pplates reload:
-    description: Reload any changes to the config file
+    description: Reloads any changes to the config file
     usage: |
       /pplates reload
 permissions:
   pplates.admin:
-    description: Gives access to /pplates create
+    description: Gives access to all pplates commands
     default: op
   pplates.use:
     description: Gives ability to use any pressure plate
+    default: op
+  pplates.create:
+    description: Gives access to /pplates create
+    default: op
+  pplates.list:
+    description: Gives access to /pplates list
+    default: op
+  pplates.info:
+    description: Gives access to /pplates info
+    default: op
+  pplates.reload:
+    description: Gives access to /pplates reload
     default: op

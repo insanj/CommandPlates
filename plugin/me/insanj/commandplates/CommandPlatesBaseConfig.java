@@ -23,12 +23,20 @@ class CommandPlatesBaseConfig {
     public String INFO() { return "info"; }
     public String REMOVE() { return "remove"; }
     public String RELOAD() { return "reload"; }
+    public String[] ALL() { return new String[]{CREATE(), LIST(), INFO(), REMOVE(), RELOAD()}; }
   }
 
   class PermissionStrings {
     public String PREFIX() { return "pplates"; }
-    public String CREATE() { return String.format("%s.%s", PREFIX(), "admin"); }
+    public String ADMIN() { return String.format("%s.%s", PREFIX(), "admin"); }
     public String USE() { return String.format("%s.%s",  PREFIX(), "use"); }
+
+    public String CREATE() { return String.format("%s.%s", PREFIX(), "create"); }
+    public String LIST() { return String.format("%s.%s", PREFIX(), "list"); }
+    public String INFO() { return String.format("%s.%s",  PREFIX(), "info"); }
+    public String REMOVE() { return String.format("%s.%s",  PREFIX(), "remove"); }
+    public String RELOAD() { return String.format("%s.%s",  PREFIX(), "reload"); }
+
     public String PLAYER(String playerName) { return String.format("%s.%s", PREFIX(), playerName); }
     public String PLATE(String plateName) {return String.format("%s.%s", PREFIX(), plateName); }
   }
